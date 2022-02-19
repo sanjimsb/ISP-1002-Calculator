@@ -9,9 +9,9 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var calculatorView: UITextField!
-    
     var equations:String = "";
+    @IBOutlet weak var calculatorView: UILabel!
+    @IBOutlet weak var calculatedResults: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +42,7 @@ class ViewController: UIViewController {
     @IBAction func clearAll(_ sender: Any) {
         equations = ""
         calculatorView.text = equations
+        calculatedResults.text = "0";
     }
     @IBAction func clearOneByOne(_ sender: Any) {
         equations = String(equations.dropLast())
@@ -79,6 +80,11 @@ class ViewController: UIViewController {
         addEquation(value: "9")
     }
     
+    @IBAction func answer(_ sender: Any) {
+        let finalEquation = NSExpression(format: equations)
+        let result = finalEquation.expressionValue(with: nil, context: nil) as! Double
+        calculatedResults.text = String(result)
+    }
     
     
 }
