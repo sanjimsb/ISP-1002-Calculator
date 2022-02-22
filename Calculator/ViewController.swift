@@ -9,7 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var equations:String = "";
+    var equations:String = ""
+    var showError: Bool = false
     @IBOutlet weak var calculatorView: UILabel!
     @IBOutlet weak var calculatedResults: UILabel!
     
@@ -19,8 +20,59 @@ class ViewController: UIViewController {
     }
     
     func addEquation(value: String) {
-        equations = equations + value
+        if(validation(getCurrentEquation: equations, currentValue: value)) {
+            equations = equations + value
+            calculatorView.text = equations
+        }
+        
+    }
+    
+    func validation(getCurrentEquation: String, currentValue: String) -> Bool {
+        let acceptedSymbols = ["+","*","/","-"]
+        showError = false
+        
+        if((getCurrentEquation == "" && currentValue == "+")
+            || (getCurrentEquation == "" && currentValue == "/")
+            || (getCurrentEquation == "" && currentValue == "*")
+            || (getCurrentEquation == "" && currentValue == "-")
+        ) {
+            equations = ""
+            calculatorView.text = ""
+            return false
+        } else {
+            var setChar = 0
+            for singleChar in getCurrentEquation {
+                if(acceptedSymbols.contains(String(singleChar))) {
+                    setChar = setChar + 1
+                } else {
+                    setChar = 0
+                }
+                print(setChar)
+                if(setChar >= 1) {
+                    showError = true
+                    break
+                }
+            }
+        }
+        return true
+    }
+    
+    func alertError() {
+        calculatedResults.text = "Format Error"
+        calculatedResults.textColor = UIColor.red
+    }
+    
+    @IBAction func clearAll(_ sender: Any) {
+        equations = ""
         calculatorView.text = equations
+        calculatedResults.text = "0";
+        calculatedResults.textColor = UIColor.black
+    }
+    @IBAction func clearOneByOne(_ sender: Any) {
+        equations = String(equations.dropLast())
+        calculatorView.text = equations
+        calculatedResults.text = "0";
+        calculatedResults.textColor = UIColor.black
     }
     
     @IBAction func division(_ sender: Any) {
@@ -38,17 +90,6 @@ class ViewController: UIViewController {
     @IBAction func point(_ sender: Any) {
         addEquation(value: ".")
     }
-    
-    @IBAction func clearAll(_ sender: Any) {
-        equations = ""
-        calculatorView.text = equations
-        calculatedResults.text = "0";
-    }
-    @IBAction func clearOneByOne(_ sender: Any) {
-        equations = String(equations.dropLast())
-        calculatorView.text = equations
-    }
-    
     @IBAction func zero(_ sender: Any) {
         addEquation(value: "0")
     }
@@ -81,9 +122,17 @@ class ViewController: UIViewController {
     }
     
     @IBAction func answer(_ sender: Any) {
-        let finalEquation = NSExpression(format: equations)
-        let result = finalEquation.expressionValue(with: nil, context: nil) as! Double
-        calculatedResults.text = String(result)
+        if(showError == false) {
+            if(equations.last == "+" || equations.last == "*" || equations.last == "-" || equations.last == "/"  ) {
+                equations = String(equations.dropLast())
+                calculatorView.text = equations
+            }
+            let finalEquation = NSExpression(format: equations)
+            let result = finalEquation.expressionValue(with: nil, context: nil) as! Double
+            calculatedResults.text = String(result)
+        }else{
+            alertError()
+        }
     }
     
     
