@@ -11,6 +11,7 @@ class ViewController: UIViewController {
 
     var equations:String = ""
     var showError: Bool = false
+    var countSpecialChar = 0
     @IBOutlet weak var calculatorView: UILabel!
     @IBOutlet weak var calculatedResults: UILabel!
     
@@ -40,13 +41,13 @@ class ViewController: UIViewController {
             calculatorView.text = ""
             return false
         } else {
-            var countSpecialChar = 0
-            for singleChar in getCurrentEquation {
+            for singleChar in (getCurrentEquation + currentValue) {
                 if(acceptedSymbols.contains(String(singleChar))) {
-                    countSpecialChar = countSpecialChar + 1
+                    countSpecialChar +=  1
                 } else {
                     countSpecialChar = 0
                 }
+                print(countSpecialChar)
                 if(countSpecialChar > 1) {
                     showError = true
                     break
