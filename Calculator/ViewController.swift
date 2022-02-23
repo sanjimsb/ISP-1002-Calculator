@@ -40,15 +40,14 @@ class ViewController: UIViewController {
             calculatorView.text = ""
             return false
         } else {
-            var setChar = 0
+            var countSpecialChar = 0
             for singleChar in getCurrentEquation {
                 if(acceptedSymbols.contains(String(singleChar))) {
-                    setChar = setChar + 1
+                    countSpecialChar = countSpecialChar + 1
                 } else {
-                    setChar = 0
+                    countSpecialChar = 0
                 }
-                print(setChar)
-                if(setChar >= 1) {
+                if(countSpecialChar > 1) {
                     showError = true
                     break
                 }
@@ -63,12 +62,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func clearAll(_ sender: Any) {
+        showError = false
         equations = ""
         calculatorView.text = equations
         calculatedResults.text = "0";
         calculatedResults.textColor = UIColor.black
     }
     @IBAction func clearOneByOne(_ sender: Any) {
+        showError = false
         equations = String(equations.dropLast())
         calculatorView.text = equations
         calculatedResults.text = "0";
@@ -122,6 +123,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func answer(_ sender: Any) {
+        print(showError)
         if(showError == false) {
             if(equations.last == "+" || equations.last == "*" || equations.last == "-" || equations.last == "/"  ) {
                 equations = String(equations.dropLast())
